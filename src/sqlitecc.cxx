@@ -1,12 +1,7 @@
 /*
-,---.   ,-----.   ,--.   ,--.  ,--.           ,---. ,-----.
-'   .-' '  .-.  '  |  |   `--',-'  '-. ,---.  /    |'  .--./ ,---.  ,---.
-`.  `-. |  | |  |  |  |   ,--.'-.  .-'| .-. :/  '  ||  |    | .-. || .-. |
-.-'    |'  '-'  '-.|  '--.|  |  |  |  \   --.'--|  |'  '--'\| '-' '| '-' '
-`-----'  `-----'--'`-----'`--'  `--'   `----'   `--' `-----'|  |-' |  |-'
-`--'   `--'
+SQLite CC
 
-SQLite for C++ (https://github.com/vincentlaucsb/sqlite-cpp/)
+Copyright(c) 2018 Daniel Vogelbacher and released under the MIT License.
 Copyright(c) 2017-2018 Vincent La and released under the MIT License.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -28,9 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "sqlite_cpp.h"
+#include "sqlitecc.hh"
 
-namespace SQLite {
+namespace sqlite {
     /** @file
      *  Blah
      */
@@ -49,7 +44,7 @@ namespace SQLite {
             throw SQLiteError("Code " + std::to_string(error_code));
         }
     }
-    
+
     Conn::Conn(const char * db_name) {
         /** Open a connection to a SQLite3 database
          *  @param[in] db_name Path to SQLite3 database
@@ -92,7 +87,7 @@ namespace SQLite {
     sqlite3* Conn::get_ptr() {
         /**
          * Return a raw pointer to the sqlite3 handle.
-         * 
+         *
          * #### Memory Safety
          * This function will never return invalid pointers. A runtime_error is thrown
          * if this is used after Conn::close() has been called.
@@ -113,7 +108,7 @@ namespace SQLite {
          *  statements after calling close() will throw an error.
          *
          *  In most cases, calling this method explicitly is not necessary
-         *  because it gets called automatically when Conn goes out of 
+         *  because it gets called automatically when Conn goes out of
          *  scope.
          *
          *  #### Memory/Exception Safety
@@ -174,7 +169,7 @@ namespace SQLite {
             throw StatementClosed();
         }
     }
-    
+
     Conn::PreparedStatement Conn::prepare(const std::string& stmt) {
         /** Prepare a query for execution */
         this->exec("BEGIN TRANSACTION");
@@ -212,7 +207,7 @@ namespace SQLite {
 
     //
     // SQLiteResultSet
-    // 
+    //
 
     std::vector<std::string> Conn::ResultSet::get_col_names() {
         /** Retrieve the column names of a SQL query result */

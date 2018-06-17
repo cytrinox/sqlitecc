@@ -1,12 +1,12 @@
 #define CATCH_CONFIG_MAIN
 #include <stdio.h> // remove()
 #include "catch.hpp"
-#include "sqlite_cpp.h"
+#include "sqlitecc.hh"
 
-using namespace SQLite;
+using namespace sqlite;
 
 TEST_CASE("Basic Insert Test", "[test_insert_values]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
     db.exec("INSERT INTO dillydilly VALUES ('Tom Brady', 28, 7)");
     db.exec("INSERT INTO dillydilly VALUES ('Ben Roethlisberger', 26, 14)");
@@ -46,7 +46,7 @@ TEST_CASE("Basic Insert Test", "[test_insert_values]") {
 
 /** Test that prepared statements + variadic bind() works */
 TEST_CASE("Prepared Statement Test", "[test_insert_values]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
     // db.exec("BEGIN TRANSACTION");
 
@@ -106,7 +106,7 @@ TEST_CASE("Prepared Statement Test", "[test_insert_values]") {
 
 /** Test that SQLField works */
 TEST_CASE("SQLField Test", "[test_sqlfield]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
     // db.exec("BEGIN TRANSACTION");
 
@@ -174,7 +174,7 @@ TEST_CASE("SQLField Test", "[test_sqlfield]") {
 
 /** Test that iterating over empty result sets isn't dangerous */
 TEST_CASE("Empty Query Test", "[test_no_results]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
 
     auto results = db.query("SELECT * FROM dillydilly");

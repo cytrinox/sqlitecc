@@ -1,31 +1,31 @@
 #include "catch.hpp"
-#include "sqlite_cpp.h"
+#include "sqlitecc.hh"
 
 TEST_CASE("Syntax Error", "[test_exec_err]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     bool exception_raised = false;
 
     try {
         // Intentional typo
         db.exec("SELCT * FROM sqlite_master");
     }
-    catch (SQLite::SQLiteError&) {
+    catch (sqlite::SQLiteError&) {
         exception_raised = true;
     }
-    
+
     db.close();
     remove("database.sqlite");
 }
 
 TEST_CASE("Operation on Closed Database", "[test_closed_db]") {
-    SQLite::Conn db("db2.sqlite");
+    sqlite::Conn db("db2.sqlite");
     db.close();
     bool exception_raised = false;
 
     try {
         db.exec("SELECT * FROM sqlite_master");
     }
-    catch (SQLite::DatabaseClosed&) {
+    catch (sqlite::DatabaseClosed&) {
         exception_raised = true;
     }
 
@@ -36,19 +36,19 @@ TEST_CASE("Operation on Closed Database", "[test_closed_db]") {
 
 /** Test that double close() calls don't cause a segfault */
 TEST_CASE("sqlite3* Double Free", "[test_double_close]") {
-    SQLite::Conn db("db3.sqlite");
+    sqlite::Conn db("db3.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
     db.exec("INSERT INTO dillydilly VALUES ('Tom Brady', 28, 7)");
     db.close();
     REQUIRE(db.base->db == nullptr);
     db.close();
-    
+
     remove("db3.sqlite");
 }
 
 /** Test that attempting to bind too many arguments causes an error */
 TEST_CASE("Too Many Values Test", "[test_too_many_values]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT, Touchdown int, Interception int)");
     bool error_thrown = false;
 
@@ -71,7 +71,7 @@ TEST_CASE("Too Many Values Test", "[test_too_many_values]") {
 }
 
 TEST_CASE("Primary Key Violation", "[test_pkey_constraint]") {
-    SQLite::Conn db("database.sqlite");
+    sqlite::Conn db("database.sqlite");
     db.exec("CREATE TABLE dillydilly (Player TEXT PRIMARY KEY, Touchdown int, Interception int)");
     auto stmt = db.prepare("INSERT INTO dillydilly VALUES (?,?,?)");
     bool error_thrown = false;
@@ -81,9 +81,9 @@ TEST_CASE("Primary Key Violation", "[test_pkey_constraint]") {
         stmt.bind("Tom Brady", 28, 3);
         stmt.bind("Tom Brady", 28, 3);
     }
-    catch(SQLite::SQLiteError& e) {
+    catch(sqlite::SQLiteError& e) {
         std::string err_msg = e.what();
-        std::string exp_msg = SQLite::SQLITE_EXT_ERROR_MSG.find(1555)->second;
+        std::string exp_msg = sqlite::SQLITE_EXT_ERROR_MSG.find(1555)->second;
         REQUIRE(err_msg.find(exp_msg) != std::string::npos);
         error_thrown = true;
     }
@@ -95,7 +95,7 @@ TEST_CASE("Primary Key Violation", "[test_pkey_constraint]") {
     try {
         sqlite3_stmt* ptr = stmt.get_ptr();
     }
-    catch (SQLite::StatementClosed& e) {
+    catch (sqlite::StatementClosed& e) {
         error_thrown = true;
     }
 

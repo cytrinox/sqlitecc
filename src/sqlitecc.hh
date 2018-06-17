@@ -1,12 +1,7 @@
 /*
-,---.   ,-----.   ,--.   ,--.  ,--.           ,---. ,-----.
-'   .-' '  .-.  '  |  |   `--',-'  '-. ,---.  /    |'  .--./ ,---.  ,---.
-`.  `-. |  | |  |  |  |   ,--.'-.  .-'| .-. :/  '  ||  |    | .-. || .-. |
-.-'    |'  '-'  '-.|  '--.|  |  |  |  \   --.'--|  |'  '--'\| '-' '| '-' '
-`-----'  `-----'--'`-----'`--'  `--'   `----'   `--' `-----'|  |-' |  |-'
-`--'   `--'
+SQLite CC
 
-SQLite for C++ (https://github.com/vincentlaucsb/sqlite-cpp/)
+Copyright(c) 2018 Daniel Vogelbacher and released under the MIT License.
 Copyright(c) 2017-2018 Vincent La and released under the MIT License.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40,7 +35,7 @@ SOFTWARE.
 
 /** @SQLite
  */
-namespace SQLite {
+namespace sqlite {
     /** @name Errors
      *  Classes for various runtime errors
      */
@@ -80,7 +75,7 @@ namespace SQLite {
         { 787, "SQLITE_CONSTRAINT_FOREIGNKEY: Foreign key constraint failed" },
         { 1555, "SQLITE_CONSTRAINT_PRIMARYKEY: Primary key constraint failed" }
     };
-    
+
     /** Return type for SQL queries */
     class SQLField {
         struct SQLFieldConcept {
@@ -125,7 +120,7 @@ namespace SQLite {
         sqlite3** get_ref() {
             return &(this->db);
         }
-        
+
         void close() {
             if (db) {
                 sqlite3_close(db);
@@ -164,7 +159,7 @@ namespace SQLite {
         class PreparedStatement {
         public:
             PreparedStatement(Conn& conn, const std::string& stmt);
-            
+
             /** @name Binding Values */
             ///@{
             template<typename... Args>
@@ -257,7 +252,7 @@ namespace SQLite {
     void throw_sqlite_error(const int& error_code,
         const int& ext_error_code=-1);
     ///@}
-    
+
     template<>
     inline void Conn::PreparedStatement::bind(const size_t i, const char* value) {
         sqlite3_bind_text(
